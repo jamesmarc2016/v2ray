@@ -98,8 +98,8 @@ v2ray_config() {
 		echo "备注1: 含有 [dynamicPort] 的即启用动态端口.."
 		echo "备注2: [utp | srtp | wechat-video] 分别为 伪装成 [BT下载 | 视频通话 | 微信视频通话]"
 		echo
-		read -p "$(echo -e "(默认协议: ${cyan}WebSocket$none)"):" v2ray_transport_opt
-		[ -z "$v2ray_transport_opt" ] && v2ray_transport_opt=3
+		read -p "$(echo -e "(默认协议: ${cyan}WebSocket + TLS$none)"):" v2ray_transport_opt
+		[ -z "$v2ray_transport_opt" ] && v2ray_transport_opt=4
 		case $v2ray_transport_opt in
 		[1-9] | 1[0-7])
 			echo
@@ -277,8 +277,8 @@ tls_config() {
 	local random=$(shuf -i20001-65535 -n1)
 	while :; do
 		echo -e "请输入 "$yellow"V2Ray"$none" 端口 ["$magenta"1-65535"$none"]，不能选择 "$magenta"80"$none" 或 "$magenta"443"$none" 端口"
-		read -p "$(echo -e "(默认端口: ${cyan}8888$none):")" v2ray_port
-		[ -z "$v2ray_port" ] && v2ray_port="8888"
+		read -p "$(echo -e "(默认端口: ${cyan}${random}$none):")" v2ray_port
+		[ -z "$v2ray_port" ] && v2ray_port=$random
 		case $v2ray_port in
 		80)
 			echo
@@ -307,7 +307,7 @@ tls_config() {
 	while :; do
 		echo
 		echo -e "请输入一个 $magenta正确的域名$none，一定一定一定要正确，不！能！出！错！"
-		read -p "(例如：yun.cloudtang.cf): " domain
+		read -p "(例如：233blog.com): " domain
 		[ -z "$domain" ] && error && continue
 		echo
 		echo
@@ -430,9 +430,9 @@ path_config_ask() {
 path_config() {
 	echo
 	while :; do
-		echo -e "请输入想要 ${magenta}用来分流的路径$none , 例如 /jamesmarc , 那么只需要输入 233blog 即可"
-		read -p "$(echo -e "(默认: [${cyan}jamesmarc$none]):")" path
-		[[ -z $path ]] && path="jamesmarc"
+		echo -e "请输入想要 ${magenta}用来分流的路径$none , 例如 /blog , 那么只需要输入 233blog 即可"
+		read -p "$(echo -e "(默认: [${cyan}blog$none]):")" path
+		[[ -z $path ]] && path="blog"
 
 		case $path in
 		*[/$]*)
@@ -543,8 +543,8 @@ shadowsocks_port_config() {
 	local random=$(shuf -i20001-65535 -n1)
 	while :; do
 		echo -e "请输入 "$yellow"Shadowsocks"$none" 端口 ["$magenta"1-65535"$none"]，不能和 "$yellow"V2Ray"$none" 端口相同"
-		read -p "$(echo -e "(默认端口: ${cyan}6666$none):") " ssport
-		[ -z "$ssport" ] && ssport="6666"
+		read -p "$(echo -e "(默认端口: ${cyan}${random}$none):") " ssport
+		[ -z "$ssport" ] && ssport=$random
 		case $ssport in
 		$v2ray_port)
 			echo
@@ -593,8 +593,8 @@ shadowsocks_password_config() {
 
 	while :; do
 		echo -e "请输入 "$yellow"Shadowsocks"$none" 密码"
-		read -p "$(echo -e "(默认密码: ${cyan}jamesmarc2016$none)"): " sspass
-		[ -z "$sspass" ] && sspass="jamesmarc2016"
+		read -p "$(echo -e "(默认密码: ${cyan}233blog.com$none)"): " sspass
+		[ -z "$sspass" ] && sspass="233blog.com"
 		case $sspass in
 		*[/$]*)
 			echo
@@ -1134,6 +1134,14 @@ install_v2ray() {
 				v2ray_server_config_file="/etc/v2ray/jamesmarc/v2ray/config/server/kcp_dynamic.json"
 				v2ray_client_config_file="/etc/v2ray/jamesmarc/v2ray/config/client/kcp.json"
 				;;
+			16)
+				v2ray_server_config_file="/etc/v2ray/jamesmarc/v2ray/config/server/h2.json"
+				v2ray_client_config_file="/etc/v2ray/jamesmarc/v2ray/config/client/h2.json"
+				;;
+			17)
+				v2ray_server_config_file="/etc/v2ray/jamesmarc/v2ray/config/server/socks.json"
+				v2ray_client_config_file="/etc/v2ray/jamesmarc/v2ray/config/client/socks.json"
+				;;
 			esac
 		fi
 
@@ -1352,7 +1360,7 @@ config() {
 	elif [[ $v2ray_transport_opt == 17 ]]; then
 		sed -i "21s/jamesmarc2016/$ip/; 22s/80/$v2ray_port/; 25s/jamesmarc/$username/; 26s/jamesmarc2016/$userpass/" $v2ray_client_config
 	else
-		sed -i "s/jamesmarc2016/$ip/; 22s/80/$v2ray_port/; 25s/$old_id/${uuid}/" $v2ray_client_config
+		sed -i "s/jamesmarc2016/$ip/; 22s/80/$v2ray_port/; 25s/$old_id/$uuid/" $v2ray_client_config
 	fi
 
 	zip -q -r -j --password "jamesmarc2016" /etc/v2ray/jamesmarc_v2ray.zip $v2ray_client_config
@@ -1547,7 +1555,7 @@ show_config_info() {
 		echo
 		echo -e "$yellow 地址 (Address) = $cyan${domain}$none"
 		echo
-		echo -e "$yellow 端口 (Port) = ${cyan}80${none}"
+		echo -e "$yellow 端口 (Port) = ${cyan}443${none}"
 		echo
 		echo -e "$yellow 用户ID (User ID / UUID) = $cyan${uuid}$none"
 		echo
