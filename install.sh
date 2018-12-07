@@ -123,7 +123,7 @@ v2ray_port_config() {
 		while :; do
 			echo -e "请输入 "$yellow"V2Ray"$none" 端口 ["$magenta"1-65535"$none"]"
 			read -p "$(echo -e "(默认端口: ${cyan}80$none):")" v2ray_port
-			[ -z "$v2ray_port" ] && v2ray_port="80"
+			[ -z "$v2ray_port" ] && v2ray_port=80
 			case $v2ray_port in
 			[1-9] | [1-9][0-9] | [1-9][0-9][0-9] | [1-9][0-9][0-9][0-9] | [1-5][0-9][0-9][0-9][0-9] | 6[0-4][0-9][0-9][0-9] | 65[0-4][0-9][0-9] | 655[0-3][0-5])
 				echo
@@ -1509,7 +1509,7 @@ show_config_info() {
 		cat >/etc/v2ray/vmess_qr.json <<-EOF
 		{
 			"v": "2",
-			"ps": "jamesmarc_v2ray_${domain}",
+			"ps": "v2ray66.com_${domain}",
 			"add": "${domain}",
 			"port": "443",
 			"id": "${uuid}",
@@ -1525,7 +1525,7 @@ show_config_info() {
 		cat >/etc/v2ray/vmess_qr.json <<-EOF
 		{
 			"v": "2",
-			"ps": "jamesmarc_v2ray_${ip}",
+			"ps": "v2ray66.com_${ip}",
 			"add": "${ip}",
 			"port": "${v2ray_port}",
 			"id": "${uuid}",

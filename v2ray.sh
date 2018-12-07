@@ -179,12 +179,12 @@ create_vmess_URL_config() {
 		cat >/etc/v2ray/vmess_qr.json <<-EOF
 		{
 			"v": "2",
-			"ps": "jamesmarc.com_${domain}",
+			"ps": "v2ray66.com_${domain}",
 			"add": "${domain}",
 			"port": "443",
 			"id": "${v2ray_id}",
 			"aid": "255",
-			"net": "ws",
+			"net": "${net}",
 			"type": "none",
 			"host": "${domain}",
 			"path": "$_path",
@@ -220,7 +220,7 @@ view_v2ray_config_info() {
 	if [[ $v2ray_transport == "4" || $v2ray_transport == 16 ]]; then
 		if [[ ! $caddy_installed ]]; then
 			echo
-			echo -e " $red警告！$none$yellow请自行配置 TLS...教程"
+			echo -e " $red警告！$none$yellow请自行配置 TLS...教程: https://v2ray66.com/post/3/$none"
 		fi
 		echo
 		echo -e "$yellow 地址 (Address) = $cyan${domain}$none"
@@ -286,7 +286,7 @@ view_v2ray_config_info() {
 	fi
 	echo "---------- END -------------"
 	echo
-	echo "V2Ray 客户端使用教程"
+	echo "V2Ray 客户端使用教程: https://v2ray66.com/post/4/"
 	echo
 }
 get_shadowsocks_config() {
@@ -354,7 +354,7 @@ get_shadowsocks_config_qr_link() {
 		get_ip
 		local ss="ss://$(echo -n "${ssciphers}:${sspass}@${ip}:${ssport}" | base64 -w 0)#jamesmarc_ss_${ip}"
 		echo "${ss}" >/tmp/233blog_shadowsocks.txt
-		cat /tmp/233blog_shadowsocks.txt | qrencode -s 50 -o /tmp/233blog_shadowsocks.png
+		cat /tmp/233blog_shadowsocks.txt | qrencode -s 50 -o /tmp/jamesmarc_shadowsocks.png
 
 		local random=$(echo $RANDOM-$RANDOM-$RANDOM | base64 -w 0)
 		local link=$(curl -s --upload-file /tmp/jamesmarc_shadowsocks.png "https://transfer.sh/${random}_v2ray666_shadowsocks.png")
